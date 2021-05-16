@@ -18,6 +18,7 @@ import { queryChsaResponseSet } from "../src/controllers/chsa";
 import { isEmptyValue } from "../src/libs/utils";
 import FauxExpress from "./src/fauxexpress";
 
+
 jest.mock("../src/libs/utils", () => ({
   isEmptyValue: jest.fn(),
   isValidLongitude: jest.fn(),
@@ -45,8 +46,10 @@ describe("Chsa resources event handlers", () => {
     };
 
     // @ts-ignore
-    await expect(queryChsaResponseSet(req, ex.res)).rejects.toThrow();
+    //const result = await expect(queryChsaResponseSet(req, ex.res)).rejects.toThrow();
+    //expect(result).toMatchSnapshot();
 
+    await expect(queryChsaResponseSet(req, ex.res)).rejects.toThrow();
     expect(ex.res.status).not.toBeCalled();
     expect(ex.res.json).not.toBeCalled();
   });
