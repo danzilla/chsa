@@ -48,6 +48,7 @@ export default function getValidator() {
     if (errors && errors.longitude) {
       return errors.longitude[0];
     }
+    return null;
   };
 
   const mustBeValidLatitude = (value: any) => {
@@ -55,6 +56,7 @@ export default function getValidator() {
     if (errors && errors.latitude) {
       return errors.latitude[0];
     }
+    return null;
   };
 
   return {
