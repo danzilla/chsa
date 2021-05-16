@@ -1,4 +1,5 @@
 version: "3.6"
+# Enviroment Variables
 x-env: &defaults
   NODE_ENV: ${NODE_ENV}
   NODE_PATH: ${NODE_PATH}
@@ -15,7 +16,12 @@ x-env: &defaults
   FLYWAY_PLACEHOLDER_REPLACEMENT: "true"
   FLYWAY_PLACEHOLDERS_USERNAME: ${FLYWAY_PLACEHOLDERS_USERNAME}
   GEO_BASEURL: ${GEO_BASEURL}
+# Volumes - Persistent Storage for Databases
+volumes:
+  database_data:
+    driver: local
 services:
+  # Web Service - Client
   web:
     stdin_open: true
     # tty: true
@@ -41,6 +47,7 @@ services:
       NODE_ENV: development
     command: >
       bash -c "npm start"
+  # API Service - Server
   api:
     container_name: chsa-api
     image: chsa/api
@@ -65,6 +72,7 @@ services:
       PORT: 8100
     command: >
       bash -c "sleep 5 && npm run dev:docker"
+  # Postgres - Database
   postgres:
     container_name: chsa-pg
     image: chsa/db
@@ -72,8 +80,8 @@ services:
       context: db/
       dockerfile: Dockerfile
     volumes:
-      - type: bind
-        source: ./pg_data
+      - type: volume
+        source: database_data
         target: /var/lib/postgresql/data
       - type: bind
         source: ./db
@@ -100,6 +108,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+  # Flyway Service - Database migration tool
   flyway:
     container_name: chsa-pg-migrations
     image: flyway/flyway:7.4.0-alpine
